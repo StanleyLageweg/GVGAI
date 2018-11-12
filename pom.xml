@@ -8,6 +8,9 @@
     <artifactId>gvgai</artifactId>
     <version>1.0.1</version>
     <build>
+        <sourceDirectory>src</sourceDirectory>
+        <testSourceDirectory>test</testSourceDirectory>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
