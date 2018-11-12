@@ -12,3 +12,5 @@ out/
 /build/classes/
 /build/dist/
 production/
+
+generatedLevels/*
