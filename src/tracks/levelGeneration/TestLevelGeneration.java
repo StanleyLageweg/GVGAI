@@ -55,7 +55,7 @@ public class TestLevelGeneration {
 
 
 		// 1. This starts a game, in a generated level created by a specific level generator
-		if(LevelGenMachine.generateOneLevel(game, "toBeNamed.Agent", recordLevelFile)){
+		if(LevelGenMachine.generateOneLevel(game, "username.Agent", recordLevelFile)){
 		    LevelGenMachine.playOneGeneratedLevel(game, recordActionsFile, recordLevelFile, seed);
 		}
 

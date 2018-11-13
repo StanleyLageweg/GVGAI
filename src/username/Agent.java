@@ -1,4 +1,4 @@
-package toBeNamed;
+package username;
 
 import core.game.GameDescription;
 import core.generator.AbstractLevelGenerator;
