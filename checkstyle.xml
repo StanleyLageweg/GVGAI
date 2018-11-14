@@ -25,7 +25,7 @@
 
         <!-- Annotations -->
         <module name="AnnotationLocation">
-            <property name="allowSamelineMultipleAnnotations" value="true"/>
+            <property name="allowSamelineSingleParameterlessAnnotation" value="false"/>
         </module>
         <module name="AnnotationUseStyle">
             <property name="elementStyle" value="compact"/>
