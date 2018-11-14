@@ -10,6 +10,6 @@
     <suppress message="^Annotation 'Setter' should be alone on line.$"/>
 
     <!-- Tests -->
-    <suppress checks="MagicNumberCheck" files="^[A-Za-z0-9]*Test.java$"/>
-    <suppress checks="MissingCtorCheck" files="^[A-Za-z0-9]*Test.java$"/>
+    <suppress checks="MagicNumberCheck" files="^.*Test.java$"/>
+    <suppress checks="MissingCtorCheck" files="^.*Test.java$"/>
 </suppressions>
