@@ -44,8 +44,10 @@
 
         <!-- Suppress for Tests -->
         <exclude name="TooManyStaticImports"/>
+        <exclude name="AtLeastOneConstructor"/>
 
         <!-- Remove -->
+        <exclude name="CallSuperInConstructor"/>
         <exclude name="CommentDefaultAccessModifier"/>
         <exclude name="ControlStatementBraces"/>
         <exclude name="MethodArgumentCouldBeFinal"/>
@@ -61,11 +63,20 @@
             <property name="violationSuppressXPath" value="//ClassOrInterfaceDeclaration[ends-with(@Image, 'Test')]"/>
         </properties>
     </rule>
+    <rule ref="category/java/codestyle.xml/AtLeastOneConstructor">
+        <properties>
+            <property name="violationSuppressXPath" value="//ClassOrInterfaceDeclaration[ends-with(@Image, 'Test')]"/>
+        </properties>
+    </rule>
 
     <!-- Design -->
     <rule ref="category/java/design.xml">
         <!-- Modify -->
         <exclude name="SingularField"/>
+
+        <!-- Remove -->
+        <exclude name="LawOfDemeter"/>
+        <exclude name="LoosePackageCoupling"/>
     </rule>
     <rule ref="category/java/design.xml/SingularField">
         <properties>
@@ -83,6 +94,7 @@
 
         <!-- Remove -->
         <exclude name="DataflowAnomalyAnalysis"/>
+        <exclude name="BeanMembersShouldSerialize"/>
     </rule>
     <rule ref="category/java/errorprone.xml/AvoidUsingOctalValues">
         <properties>
