@@ -16,7 +16,10 @@
         <linkXRef>false</linkXRef>
 
         <!-- Versions -->
+        <assertj.version>3.11.1</assertj.version>
         <checkstyle.version>8.14</checkstyle.version>
+        <lombok.version>1.18.4</lombok.version>
+        <junit-jupiter.version>5.3.1</junit-jupiter.version>
         <maven.version>3.3.9</maven.version>
         <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
         <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
@@ -30,13 +33,36 @@
         <maven-surefire-plugin.version>3.0.0-M1</maven-surefire-plugin.version>
         <maven-project-info-reports-plugin.version>3.0.0</maven-project-info-reports-plugin.version>
         <maven-site-plugin.version>3.7.1</maven-site-plugin.version>
-        <lombok.version>1.18.4</lombok.version>
         <pmd.version>6.9.0</pmd.version>
         <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
     </properties>
 
     <dependencies>
         <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency> <!-- JUnit -->
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency> <!-- JUnit -->
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency> <!-- JUnit -->
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency> <!-- Lombok -->
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
@@ -201,7 +227,7 @@
                             <include>**/username/**</include>
                         </includes>
                         <rulesets>
-                            <ruleset>pmd.xml</ruleset>
+                            <ruleset>pmdMyGVGAI.xml</ruleset>
                         </rulesets>
                     </configuration>
                 </plugin>
