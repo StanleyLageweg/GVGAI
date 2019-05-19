@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE suppressions PUBLIC
+        "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
+        "https://checkstyle.org/dtds/suppressions_1_2.dtd">
+
+<suppressions>
+    <!-- Tests -->
+    <suppress checks="MagicNumberCheck" files="[A-Za-z0-9]*Test.java"/>
+    <suppress checks="MissingCtorCheck" files="[A-Za-z0-9]*Test.java"/>
+</suppressions>
