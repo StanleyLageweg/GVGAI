@@ -50,7 +50,7 @@ public class TestLevelGeneration {
 		// Other settings
 		int seed = new Random().nextInt();
 		int gameIdx = getIndex(games);
-		String recordLevelFile = generateLevelPath + games[gameIdx] + "_glvl.txt";
+		String recordLevelFile = "generatedLevels/" + games[gameIdx] + "_glvl.txt";
 		String game = generateLevelPath + games[gameIdx] + ".txt";
 
 
