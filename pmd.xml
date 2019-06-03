@@ -20,6 +20,7 @@
 
         <!-- Remove -->
         <exclude name="SwitchStmtsShouldHaveDefault"/>
+        <exclude name="JUnitAssertionsShouldIncludeMessage"/>
     </rule>
     <rule ref="category/java/bestpractices.xml/JUnitTestContainsTooManyAsserts">
         <properties>
@@ -40,22 +41,47 @@
     <!-- Code Style -->
     <rule ref="category/java/codestyle.xml">
         <!-- Modify -->
+        <exclude name="ClassNamingConventions"/>
         <exclude name="LongVariable"/>
+        <exclude name="ShortVariable"/>
 
         <!-- Suppress for Tests -->
         <exclude name="TooManyStaticImports"/>
-        <exclude name="AtLeastOneConstructor"/>
+        <exclude name="LinguisticNaming"/>
 
         <!-- Remove -->
+        <exclude name="AtLeastOneConstructor"/>
         <exclude name="CallSuperInConstructor"/>
         <exclude name="CommentDefaultAccessModifier"/>
         <exclude name="ControlStatementBraces"/>
+        <exclude name="DefaultPackage"/>
+        <exclude name="LocalVariableCouldBeFinal"/>
         <exclude name="MethodArgumentCouldBeFinal"/>
         <exclude name="OnlyOneReturn"/>
+    </rule>
+    <rule ref="category/java/codestyle.xml/ClassNamingConventions">
+        <properties>
+            <property name="utilityClassPattern" value="[A-Z][a-zA-Z0-9]*"/>
+        </properties>
     </rule>
     <rule ref="category/java/codestyle.xml/LongVariable">
         <properties>
             <property name="minimum" value="20"/>
+        </properties>
+    </rule>
+    <rule ref="rulesets/java/naming.xml/ShortVariable">
+        <properties>
+            <property name="xpath">
+                <value>
+                    //VariableDeclaratorId[(string-length(@Image) &lt; 3)
+                        and (not (@Image='x'))
+                        and (not (@Image='y'))
+                        and (not (@Image='z'))
+                        and (not (@Image='id'))]
+                    [not(ancestor::ForInit)]
+                    [not((ancestor::FormalParameter) and (ancestor::TryStatement))]
+                </value>
+            </property>
         </properties>
     </rule>
     <rule ref="category/java/codestyle.xml/TooManyStaticImports">
@@ -63,7 +89,7 @@
             <property name="violationSuppressXPath" value="//ClassOrInterfaceDeclaration[ends-with(@Image, 'Test')]"/>
         </properties>
     </rule>
-    <rule ref="category/java/codestyle.xml/AtLeastOneConstructor">
+    <rule ref="category/java/codestyle.xml/LinguisticNaming">
         <properties>
             <property name="violationSuppressXPath" value="//ClassOrInterfaceDeclaration[ends-with(@Image, 'Test')]"/>
         </properties>
@@ -74,6 +100,9 @@
         <!-- Modify -->
         <exclude name="SingularField"/>
 
+        <!-- Suppress for Tests -->
+        <exclude name="TooManyMethods"/>
+
         <!-- Remove -->
         <exclude name="LawOfDemeter"/>
         <exclude name="LoosePackageCoupling"/>
@@ -83,9 +112,31 @@
             <property name="checkInnerClasses" value="true"/>
         </properties>
     </rule>
+    <rule ref="category/java/design.xml/TooManyMethods">
+        <properties>
+            <property name="violationSuppressXPath" value="//ClassOrInterfaceDeclaration[ends-with(@Image, 'Test')]"/>
+        </properties>
+    </rule>
 
     <!-- Documentation -->
-    <rule ref="category/java/documentation.xml"/>
+    <rule ref="category/java/documentation.xml">
+        <!-- Modify -->
+        <exclude name="CommentSize"/>
+
+        <!-- Suppress for Tests -->
+        <exclude name="CommentRequired"/>
+    </rule>
+    <rule ref="category/java/documentation.xml/CommentSize">
+        <properties>
+            <property name="maxLines" value="20"/>
+            <property name="maxLineLength" value="120"/>
+        </properties>
+    </rule>
+    <rule ref="category/java/documentation.xml/CommentRequired">
+        <properties>
+            <property name="violationSuppressXPath" value="//ClassOrInterfaceDeclaration[ends-with(@Image, 'Test')]"/>
+        </properties>
+    </rule>
 
     <!-- Error Prone -->
     <rule ref="category/java/errorprone.xml">
@@ -107,7 +158,10 @@
     <rule ref="category/java/multithreading.xml"/>
 
     <!-- Performance -->
-    <rule ref="category/java/performance.xml"/>
+    <rule ref="category/java/performance.xml">
+        <!-- Remove -->
+        <exclude name="AvoidInstantiatingObjectsInLoops"/>
+    </rule>
 
     <!-- Security -->
     <rule ref="category/java/security.xml"/>
