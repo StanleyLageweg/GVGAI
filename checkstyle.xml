@@ -88,6 +88,8 @@
         <module name="SuperClone"/>
         <module name="SuperFinalize"/>
         <module name="UnnecessaryParentheses"/>
+        <module name="UnnecessarySemicolonInEnumeration"/>
+        <module name="UnnecessarySemicolonInTryWithResources"/>
 
         <!-- Headers -->
 
@@ -118,9 +120,13 @@
         <module name="JavadocTagContinuationIndentation"/>
         <module name="JavadocType"/>
         <module name="JavadocVariable"/>
-        <!--<module name="MissingJavadocMethod"/>-->
+        <module name="MissingJavadocMethod">
+            <property name="scope" value="private"/>
+        </module>
+        <module name="MissingJavadocType">
+            <property name="scope" value="private"/>
+        </module>
         <module name="NonEmptyAtclauseDescription"/>
-        <module name="SummaryJavadocCheck"/>
 
         <!-- Metrics -->
         <module name="ClassFanOutComplexity"/>
