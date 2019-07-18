@@ -1,5 +1,11 @@
 package username;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * A class containing constants that are used by the level generator.
  */
@@ -36,7 +42,50 @@ final class Constants {
 	static final double RANDOM_HEIGHT = 0.25;
 
 	/**
+	 * Random number generator.
+	 */
+	static final Random RNG = new Random();
+
+	/**
+	 * Logger.
+	 */
+	static final Logger LOGGER = Logger.getLogger(Constants.class.getName());
+
+	static {
+		System.setProperty("java.util.logging.SimpleFormatter.format", "[%4$-7s] %5$s");
+	}
+
+	/**
 	 * Hide the constructor.
 	 */
 	private Constants() {}
+
+	/**
+	 * Logs a warning, with a stack trace.
+	 * @param  message
+	 *         A <a href="../util/Formatter.html#syntax">format message string</a>
+	 *
+	 * @param  args
+	 *         Arguments referenced by the format specifiers in the format
+	 *         string.  If there are more arguments than format specifiers, the
+	 *         extra arguments are ignored.  The number of arguments is
+	 *         variable and may be zero.  The maximum number of arguments is
+	 *         limited by the maximum dimension of a Java array as defined by
+	 *         <cite>The Java&trade; Virtual Machine Specification</cite>.
+	 *         The behaviour on a
+	 *         {@code null} argument depends on the <a
+	 *         href="../util/Formatter.html#syntax">conversion</a>.
+	 */
+	public static void warning(String message, Object... args) {
+		if (LOGGER.isLoggable(Level.WARNING)) {
+			// Get the stack trace
+			StringWriter stringWriter = new StringWriter();
+			new Throwable().printStackTrace(new PrintWriter(stringWriter));
+			String stackTrace = stringWriter.toString();
+			stackTrace = stackTrace.substring(stackTrace.indexOf('\n', stackTrace.indexOf('\n') + 1));
+
+			// Log the message and stack trace
+			LOGGER.warning(String.format(message, args) + stackTrace);
+		}
+	}
 }
