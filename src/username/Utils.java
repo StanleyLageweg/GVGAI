@@ -1,7 +1,6 @@
 package username;
 
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * A utilities class.
@@ -74,15 +73,5 @@ final class Utils {
 	@SafeVarargs
 	public static <T> T[][] copyMatrix(T[]... matrix) {
 		return Arrays.stream(matrix).map(array -> Arrays.copyOf(array, array.length)).toArray(array -> matrix.clone());
-	}
-
-	/**
-	 * Returns a random element from the list.
-	 * @param list The list to get a random element from.
-	 * @param <T> The type of the list.
-	 * @return A random element from the list.
-	 */
-	public static <T> T random(List<T> list) {
-		return list.get(Constants.rng.nextInt(list.size()));
 	}
 }

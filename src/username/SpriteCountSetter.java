@@ -135,8 +135,8 @@ public class SpriteCountSetter {
 	 */
 	private void makeEqual(int count, List<String> sprites, int spriteCount) {
 		int nrSpritesToAdd = count - spriteCount;
-		for (int i = 0; i < nrSpritesToAdd; i++) level.addSpriteRandomly(Utils.random(sprites));
-		for (int i = 0; i > nrSpritesToAdd; i--) level.removeSpriteRandomly(Utils.random(sprites));
+		for (int i = 0; i < nrSpritesToAdd; i++) level.addSpriteRandomly(Constants.rng.elementOf(sprites));
+		for (int i = 0; i > nrSpritesToAdd; i--) level.removeSpriteRandomly(Constants.rng.elementOf(sprites));
 	}
 
 	/**

@@ -86,7 +86,7 @@ public class Agent extends AbstractLevelGenerator {
 
 		// Get the sprite to use for the border
 		List<String> solidSprites = gameAnalyzer.getSolidSprites();
-		String solidSprite = solidSprites.get(Constants.rng.nextInt(solidSprites.size()));
+		String solidSprite = Constants.rng.elementOf(solidSprites);
 
 		// Add a border along the top and bottom side of the level
 		for (int x = 0; x < level.getWidth(); x++) {
@@ -120,7 +120,7 @@ public class Agent extends AbstractLevelGenerator {
 		List<TerminationData> winConditions = terminationConditions.stream().filter(terminationData ->
 				Boolean.parseBoolean(terminationData.win.split(",", 2)[0])).collect(Collectors.toList());
 
-		TerminationData winCondition = Utils.random(winConditions);
+		TerminationData winCondition = Constants.rng.elementOf(winConditions);
 
 		// Make the conditions, before the win condition, not hold
 		terminationConditions.subList(0, terminationConditions.indexOf(winCondition)).forEach(condition ->
@@ -221,7 +221,7 @@ public class Agent extends AbstractLevelGenerator {
 		List<String> solidSprites = gameAnalyzer.getSolidSprites();
 
 		// Fill unreachable areas with solid sprites
-		String solidSprite = solidSprites.get(Constants.rng.nextInt(solidSprites.size()));
+		String solidSprite = Constants.rng.elementOf(solidSprites);
 		level.forEachPosition((x, y) -> {
 			if (!reachable[y][x]) level.setSprite(x, y, solidSprite);
 		});

@@ -111,7 +111,7 @@ class MultiCounterTest {
 		spriteCounter.increment(SPRITE);
 		MultiCounter<String> other = new MultiCounter<>(SPRITE, SPRITE);
 		assertThat(spriteCounter).isNotEqualTo(other);
-		assertThat(spriteCounter.hashCode()).isNotEqualTo(other);
+		assertThat(spriteCounter.hashCode()).isNotEqualTo(other.hashCode());
 	}
 
 	@Test

@@ -3,9 +3,9 @@ package username;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import username.random.ExtendedRandom;
 
 import java.util.List;
-import java.util.Random;
 import java.util.logging.LogRecord;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,7 +18,7 @@ class SpriteCountSetterTest {
 
 	private static final List<LogRecord> LOG_RECORDS = new TestLogHandler(Constants.LOGGER).getRecords();
 
-	private static final Random RNG = spy(Random.class);
+	private static final ExtendedRandom RNG = spy(ExtendedRandom.class);
 
 	private Level level;
 

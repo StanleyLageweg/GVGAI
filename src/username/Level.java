@@ -2,6 +2,7 @@ package username;
 
 import lombok.Getter;
 import lombok.Setter;
+import username.random.MatrixSelection;
 
 import java.util.Arrays;
 import java.util.List;
@@ -146,10 +147,9 @@ public class Level {
 		int count = spriteCounter.get(sprite);
 		if (count == 0) return;
 
-		// TODO improve this code, such to not have random repeated guessing
-		while (spriteCounter.get(sprite) >= count) {
-			forRandomPosition((x, y) -> removeSprite(x, y, sprite), true);
-		}
+		MatrixSelection<Character> selection = Constants.rng.elementOfWhere(matrix,
+				LEVEL_MAPPING.getContainingAll(sprite)::contains);
+		removeSprite(selection.getX(), selection.getY(), sprite);
 	}
 
 	/**
@@ -188,8 +188,8 @@ public class Level {
 		int borderClearance = hasBorder && avoidBorder ? 1 : 0;
 
 		// Pick a random location to add the sprite
-		int x = Constants.rng.nextInt(width - borderClearance) + borderClearance;
-		int y = Constants.rng.nextInt(height - borderClearance) + borderClearance;
+		int x = Constants.rng.nextInt(borderClearance, width - borderClearance);
+		int y = Constants.rng.nextInt(borderClearance, height - borderClearance);
 
 		fun.accept(x, y);
 	}

@@ -1,8 +1,9 @@
 package username;
 
+import username.random.ExtendedRandom;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,7 +46,7 @@ final class Constants {
 	/**
 	 * Random number generator.
 	 */
-	static Random rng = new Random();
+	static ExtendedRandom rng = new ExtendedRandom();
 
 	/**
 	 * Logger.
