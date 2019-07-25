@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 /**
  * A class containing constants that are used by the level generator.
  */
+@SuppressWarnings("checkstyle:visibilitymodifier")
 final class Constants {
 
 	/**
@@ -44,7 +45,7 @@ final class Constants {
 	/**
 	 * Random number generator.
 	 */
-	static final Random RNG = new Random();
+	static Random rng = new Random();
 
 	/**
 	 * Logger.

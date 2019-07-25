@@ -9,17 +9,17 @@ import java.util.logging.LogRecord;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class SpriteCounterTest {
+class MultiCounterTest {
 
 	private static final String SPRITE = "sprite";
 
 	private static final List<LogRecord> LOG_RECORDS = new TestLogHandler(Constants.LOGGER).getRecords();
 
-	private SpriteCounter spriteCounter;
+	private MultiCounter<String> spriteCounter;
 
 	@BeforeEach
 	void beforeEach() {
-		spriteCounter = new SpriteCounter();
+		spriteCounter = new MultiCounter<>();
 		LOG_RECORDS.clear();
 	}
 
@@ -40,9 +40,7 @@ class SpriteCounterTest {
 	@Test
 	void increment3Times() {
 		// Increment 3 times
-		spriteCounter.increment(SPRITE);
-		spriteCounter.increment(SPRITE);
-		spriteCounter.increment(SPRITE);
+		spriteCounter.increment(SPRITE, SPRITE, SPRITE);
 
 		// Assert count changed
 		assertThat(spriteCounter.get(SPRITE)).isEqualTo(3);
@@ -75,13 +73,60 @@ class SpriteCounterTest {
 	@Test
 	void decrementTwo() {
 		// Increment 2 times
-		spriteCounter.increment(SPRITE);
-		spriteCounter.increment(SPRITE);
+		spriteCounter.increment(SPRITE, SPRITE);
 
 		// Decrement
 		spriteCounter.decrement(SPRITE);
 
 		// Assert count changed
 		assertThat(spriteCounter.get(SPRITE)).isOne();
+	}
+
+	@Test
+	void toList() {
+		// Increment
+		spriteCounter.increment(SPRITE, SPRITE, "Another Sprite");
+
+		// Assert
+		assertThat(spriteCounter.toList()).containsExactly(SPRITE, SPRITE, "Another Sprite");
+	}
+
+	@Test
+	void equals() {
+		MultiCounter<String> other = new MultiCounter<>(SPRITE);
+
+		spriteCounter.increment(SPRITE);
+		assertThat(spriteCounter).isEqualTo(other);
+		assertThat(spriteCounter).hasSameHashCodeAs(other);
+	}
+
+	@Test
+	void equalsSame() {
+		assertThat(spriteCounter).isEqualTo(spriteCounter);
+		assertThat(spriteCounter).hasSameHashCodeAs(spriteCounter);
+	}
+
+	@Test
+	void notEquals() {
+		spriteCounter.increment(SPRITE);
+		MultiCounter<String> other = new MultiCounter<>(SPRITE, SPRITE);
+		assertThat(spriteCounter).isNotEqualTo(other);
+		assertThat(spriteCounter.hashCode()).isNotEqualTo(other);
+	}
+
+	@Test
+	void notEqualsNull() {
+		assertThat(spriteCounter).isNotEqualTo(null);
+	}
+
+	@Test
+	void notEqualsType() {
+		assertThat(spriteCounter).isNotEqualTo(42);
+	}
+
+	@Test
+	void notEqualsGenericType() {
+		spriteCounter.increment(SPRITE);
+		assertThat(spriteCounter).isNotEqualTo(new MultiCounter<>(42));
 	}
 }

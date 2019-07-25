@@ -5,6 +5,8 @@
         "https://checkstyle.org/dtds/suppressions_1_2.dtd">
 
 <suppressions>
+    <suppress checks="AnnotationLocationCheck" message="Annotation 'Setter' should be alone on line."/>
+
     <!-- Tests -->
     <suppress checks="JavadocMethodCheck" files="^.*test"/>
     <suppress checks="JavadocVariableCheck" files="^.*test"/>

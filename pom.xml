@@ -22,7 +22,7 @@
         <groovy-all.version>3.0.0-beta-2</groovy-all.version>
         <lombok.version>1.18.8</lombok.version>
         <jacoco-maven-plugin.version>0.8.2</jacoco-maven-plugin.version>
-        <junit-jupiter.version>5.5.0</junit-jupiter.version>
+        <junit-jupiter.version>5.5.1</junit-jupiter.version>
         <maven.version>3.3.9</maven.version>
         <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
         <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
@@ -75,6 +75,11 @@
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency> <!-- Mockito -->
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>3.0.0</version>
         </dependency>
     </dependencies>
 

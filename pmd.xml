@@ -19,12 +19,13 @@
         <exclude name="UnusedFormalParameter"/>
 
         <!-- Remove -->
+        <exclude name="AvoidReassigningParameters"/>
         <exclude name="SwitchStmtsShouldHaveDefault"/>
         <exclude name="JUnitAssertionsShouldIncludeMessage"/>
     </rule>
     <rule ref="category/java/bestpractices.xml/JUnitTestContainsTooManyAsserts">
         <properties>
-            <property name="maximumAsserts" value="2"/>
+            <property name="maximumAsserts" value="4"/>
         </properties>
     </rule>
     <rule ref="category/java/bestpractices.xml/OneDeclarationPerLine">
@@ -66,20 +67,17 @@
     </rule>
     <rule ref="category/java/codestyle.xml/LongVariable">
         <properties>
-            <property name="minimum" value="20"/>
+            <property name="minimum" value="25"/>
         </properties>
     </rule>
     <rule ref="rulesets/java/naming.xml/ShortVariable">
         <properties>
-            <property name="xpath">
+            <property name="violationSuppressXPath">
                 <value>
-                    //VariableDeclaratorId[(string-length(@Image) &lt; 3)
-                        and (not (@Image='x'))
-                        and (not (@Image='y'))
-                        and (not (@Image='z'))
-                        and (not (@Image='id'))]
-                    [not(ancestor::ForInit)]
-                    [not((ancestor::FormalParameter) and (ancestor::TryStatement))]
+                    .[ (matches(@Image, '^x[0-9]*$'))
+                    or (matches(@Image, '^y[0-9]*$'))
+                    or (matches(@Image, '^z[0-9]*$'))
+                    or (@Image='id')]
                 </value>
             </property>
         </properties>
@@ -100,7 +98,7 @@
         <!-- Modify -->
         <exclude name="SingularField"/>
 
-        <!-- Suppress for Tests -->
+        <!-- Modify and Suppress for Tests -->
         <exclude name="TooManyMethods"/>
 
         <!-- Remove -->
@@ -114,6 +112,7 @@
     </rule>
     <rule ref="category/java/design.xml/TooManyMethods">
         <properties>
+            <property name="maxmethods" value="25"/>
             <property name="violationSuppressXPath" value="//ClassOrInterfaceDeclaration[ends-with(@Image, 'Test')]"/>
         </properties>
     </rule>
@@ -142,14 +141,23 @@
     <rule ref="category/java/errorprone.xml">
         <!-- Modify -->
         <exclude name="AvoidUsingOctalValues"/>
+        
+        <!-- Suppress for Tests -->
+        <exclude name="SuspiciousEqualsMethodName"/>
 
         <!-- Remove -->
         <exclude name="DataflowAnomalyAnalysis"/>
         <exclude name="BeanMembersShouldSerialize"/>
+        <exclude name="ConstructorCallsOverridableMethod"/>
     </rule>
     <rule ref="category/java/errorprone.xml/AvoidUsingOctalValues">
         <properties>
             <property name="strict" value="true"/>
+        </properties>
+    </rule>
+    <rule ref="category/java/errorprone.xml/SuspiciousEqualsMethodName">
+        <properties>
+            <property name="violationSuppressXPath" value="//ClassOrInterfaceDeclaration[ends-with(@Image, 'Test')]"/>
         </properties>
     </rule>
 

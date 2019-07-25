@@ -80,7 +80,6 @@
         <module name="OneStatementPerLine"/>
         <module name="OverloadMethodsDeclarationOrder"/>
         <module name="PackageDeclaration"/>
-        <module name="ParameterAssignment"/>
         <module name="RequireThis"/>
         <module name="SimplifyBooleanExpression"/>
         <module name="SimplifyBooleanReturn"/>
@@ -97,10 +96,11 @@
         <module name="AvoidStarImport">
             <property name="excludes" value="java.awt"/>
             <property name="excludes" value="javax.swing"/>
+            <property name="excludes" value="org.mockito.Mockito.*"/>
         </module>
         <module name="AvoidStaticImport">
             <property name="excludes"
-                      value="org.assertj.core.api.Assertions.*, org.mockito.Mockito.*"/>
+                      value="org.assertj.core.api.Assertions.*, org.assertj.core.data.MapEntry.*, org.mockito.Mockito.*"/>
         </module>
         <module name="CustomImportOrder"> <!-- IntelliJ IDEA default settings -->
             <property name="customImportOrderRules"

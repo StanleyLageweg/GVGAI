@@ -1,6 +1,7 @@
 package username;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,133 +12,209 @@ import java.util.function.BiConsumer;
  */
 public class Level {
 
-    /**
-     * The LEVEL_MAPPING for this level.
-     */
-    @Getter private static final LevelMapping LEVEL_MAPPING = new LevelMapping();
+	/**
+	 * The LEVEL_MAPPING for this level.
+	 */
+	@Getter private static final LevelMapping LEVEL_MAPPING = new LevelMapping();
 
-    /**
-     * The level we are generating, represented as a matrix, containing chars which represent sprites.
-     * The outer array contains the rows, i.e. y coordinate.
-     * The inner array contain the columns, i.e. x coordinate.
-     */
-    private final char[][] matrix;
+	/**
+	 * The level we are generating, represented as a matrix, containing chars which represent sprites.
+	 * The outer array contains the rows, i.e. y coordinate.
+	 * The inner array contain the columns, i.e. x coordinate.
+	 */
+	private final char[][] matrix;
 
-    /**
-     * The width of the matrix.
-     */
-    @Getter private int width;
+	/**
+	 * The width of the matrix.
+	 */
+	@Getter private int width;
 
-    /**
-     * The height of the matrix.
-     */
-    @Getter private int height;
+	/**
+	 * The height of the matrix.
+	 */
+	@Getter private int height;
 
-    /**
-     * Constructs a new level, of the specified size.
-     * @param width The width of the matrix.
-     * @param height The height of the matrix.
-     */
-    Level(int width, int height) {
-        this.width = width;
-        this.height = height;
+	/**
+	 * Keeps track of the number of sprites in the level.
+	 */
+	@Getter private final MultiCounter<String> spriteCounter = new MultiCounter<>();
 
-        // Initialize the level matrix
-        char emtpyChar = LEVEL_MAPPING.get();
-        matrix = new char[height][width];
-        for (char[] column : matrix) {
-            Arrays.fill(column, emtpyChar);
-        }
-    }
+	/**
+	 * Adss or removes sprites from the level.
+	 */
+	@Getter private final SpriteCountSetter spriteCountSetter = new SpriteCountSetter(this);
 
-    /**
-     * Returns the list of sprites for a given coordinate.
-     * @param x The x coordinate.
-     * @param y The y coordinate.
-     * @return The list of sprites for a given coordinate.
-     */
-    List<String> get(int x, int y) {
-        return LEVEL_MAPPING.get(matrix[y][x]);
-    }
+	/**
+	 * Whether the level has borders or not.
+	 */
+	@Getter @Setter private boolean hasBorder;
 
-    /**
-     * Adds the sprite at the specified location, in the level matrix.
-     * @param x The x coordinate of where to set the sprite.
-     * @param y The y coordinate of where to set the sprite.
-     * @param sprite The sprite to set at the specified coordinates.
-     */
-    void addSprite(int x, int y, String sprite) {
-        matrix[y][x] = LEVEL_MAPPING.getWith(matrix[y][x], sprite);
-    }
+	/**
+	 * The tick of which this level represents the state.
+	 */
+	@Getter @Setter private int tick;
 
-    /**
-     * Sets the sprite at the specified location, in the level matrix.
-     * @param x The x coordinate of where to set the sprite.
-     * @param y The y coordinate of where to set the sprite.
-     * @param sprite The sprite to set at the specified coordinates.
-     */
-    void setSprite(int x, int y, String sprite) {
-        // TODO add behaviour for cut of areas of the level (for example: fill with solid sprites)
-        matrix[y][x] = LEVEL_MAPPING.get(sprite);
-    }
+	/**
+	 * Constructs a new level, of the specified size.
+	 * @param width The width of the matrix.
+	 * @param height The height of the matrix.
+	 */
+	Level(int width, int height) {
+		this.width = width;
+		this.height = height;
 
-    /**
-     * Removes the sprite from the specified location, in the level matrix.
-     * @param x The x coordinate of where to set the sprite.
-     * @param y The y coordinate of where to set the sprite.
-     * @param sprite The sprite to remove from the specified coordinates.
-     */
-    void removeSprite(int x, int y, String sprite) {
-        matrix[y][x] = LEVEL_MAPPING.getWithout(matrix[y][x], sprite);
-    }
+		// Initialize the level matrix
+		char emtpyChar = LEVEL_MAPPING.get();
+		matrix = new char[height][width];
+		for (char[] column : matrix) {
+			Arrays.fill(column, emtpyChar);
+		}
+	}
 
-    /**
-     * Moves the sprite to a new location, in the level matrix.
-     * If the sprite does not exist at the old location, it will still be added to the new location.
-     * @param xOld The x coordinate of where the sprite is now.
-     * @param yOld The y coordinate of where the sprite is now.
-     * @param xNew The x coordinate of where the sprite should be moved to.
-     * @param yNew The y coordinate of where the sprite should be moved to.
-     * @param sprite The sprite to be moved.
-     */
-    void moveSprite(int xOld, int yOld, int xNew, int yNew, String sprite) {
-        removeSprite(xOld, yOld, sprite);
-        addSprite(xNew, yNew, sprite);
-    }
+	/**
+	 * Returns the list of sprites for a given coordinate.
+	 * @param x The x coordinate.
+	 * @param y The y coordinate.
+	 * @return The list of sprites for a given coordinate.
+	 */
+	List<String> get(int x, int y) {
+		return LEVEL_MAPPING.get(matrix[y][x]);
+	}
 
-    /**
-     * Applies a function that takes two integers (x and y position) to each position in the level.
-     * @param fun A function that takes an x and y position as an input.
-     */
-    void forEachPosition(BiConsumer<Integer, Integer> fun) {
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                fun.accept(x, y);
-            }
-        }
-    }
+	/**
+	 * Adds the sprite at the specified location, in the level matrix.
+	 * @param x The x coordinate of where to set the sprite.
+	 * @param y The y coordinate of where to set the sprite.
+	 * @param sprite The sprite to set at the specified coordinates.
+	 */
+	void addSprite(int x, int y, String sprite) {
+		// Add the sprite to the matrix
+		matrix[y][x] = LEVEL_MAPPING.getWith(matrix[y][x], sprite);
 
-    /**
-     * Transforms the level matrix into a single String.
-     * @return The level matrix as a single String.
-     */
-    String getLevel() {
-        return getLevel(0, width, 0, height);
-    }
+		// Increase the sprite counter
+		spriteCounter.increment(sprite);
+	}
 
-    /**
-     * Transforms the level matrix into a single String, but only within the range of given coordinates.
-     * @param minX The minimum x coordinate (inclusive).
-     * @param maxX The maximum x coordinate (exclusive).
-     * @param minY The minimum y coordinate (inclusive).
-     * @param maxY The maximum y coordinate (exclusive).
-     * @return The level matrix as a single String.
-     */
-    String getLevel(int minX, int maxX, int minY, int maxY) {
-        StringBuilder result = new StringBuilder();
-        for (int y = minY; y < maxY; y++) {
-            result.append(String.valueOf(matrix[y], minX, maxX - minX)).append('\n');
-        }
-        return result.substring(0, result.length() - 1);
-    }
+	/**
+	 * Adds the specified sprite to the level, at a random coordinate.
+	 * @param sprite The sprite to be added to the level.
+	 */
+	void addSpriteRandomly(String sprite) {
+		forRandomPosition((x, y) -> addSprite(x, y, sprite), true);
+	}
+
+	/**
+	 * Sets the sprite at the specified location, in the level matrix.
+	 * @param x The x coordinate of where to set the sprite.
+	 * @param y The y coordinate of where to set the sprite.
+	 * @param sprite The sprite to set at the specified coordinates.
+	 */
+	void setSprite(int x, int y, String sprite) {
+		// TODO add behaviour for cut of areas of the level (for example: fill with solid sprites)
+
+		// Update the sprite counter
+		spriteCounter.decrement(LEVEL_MAPPING.get(matrix[y][x]));
+		spriteCounter.increment(sprite);
+
+		// Set the sprite in the matrix
+		matrix[y][x] = LEVEL_MAPPING.get(sprite);
+	}
+
+	/**
+	 * Removes the sprite from the specified location, in the level matrix.
+	 * @param x The x coordinate of where to set the sprite.
+	 * @param y The y coordinate of where to set the sprite.
+	 * @param sprite The sprite to remove from the specified coordinates.
+	 */
+	void removeSprite(int x, int y, String sprite) {
+		// Do nothing if there is no such sprite at the given position
+		List<String> sprites = LEVEL_MAPPING.get(matrix[y][x]);
+		if (!sprites.contains(sprite)) return;
+
+		// Remove the sprite from the matrix
+		matrix[y][x] = LEVEL_MAPPING.getWithout(matrix[y][x], sprite);
+
+		// Decrease the sprite counter
+		spriteCounter.decrement(sprite);
+	}
+
+	/**
+	 * Removes the specified sprite from the level, at a random coordinate.
+	 * @param sprite The sprite to be removed from the level.
+	 */
+	void removeSpriteRandomly(String sprite) {
+		int count = spriteCounter.get(sprite);
+		if (count == 0) return;
+
+		// TODO improve this code, such to not have random repeated guessing
+		while (spriteCounter.get(sprite) >= count) {
+			forRandomPosition((x, y) -> removeSprite(x, y, sprite), true);
+		}
+	}
+
+	/**
+	 * Moves the sprite to a new location, in the level matrix.
+	 * If the sprite does not exist at the old location, it will still be added to the new location.
+	 * @param xOld The x coordinate of where the sprite is now.
+	 * @param yOld The y coordinate of where the sprite is now.
+	 * @param xNew The x coordinate of where the sprite should be moved to.
+	 * @param yNew The y coordinate of where the sprite should be moved to.
+	 * @param sprite The sprite to be moved.
+	 */
+	void moveSprite(int xOld, int yOld, int xNew, int yNew, String sprite) {
+		removeSprite(xOld, yOld, sprite);
+		addSprite(xNew, yNew, sprite);
+	}
+
+	/**
+	 * Applies a function that takes two integers (x and y position) to each position in the level.
+	 * @param fun A function that takes an x and y position as an input.
+	 */
+	void forEachPosition(BiConsumer<Integer, Integer> fun) {
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
+				fun.accept(x, y);
+			}
+		}
+	}
+
+	/**
+	 * Executes a function for a random coordinate in the level.
+	 * @param fun Function that takes a x and y coordinate as an input.
+	 * @param avoidBorder Whether to avoid coordinates which are on the border.
+	 */
+	void forRandomPosition(BiConsumer<Integer, Integer> fun, boolean avoidBorder) {
+		// Determine if we need to add clearance to not add the sprite inside the border
+		int borderClearance = hasBorder && avoidBorder ? 1 : 0;
+
+		// Pick a random location to add the sprite
+		int x = Constants.rng.nextInt(width - borderClearance) + borderClearance;
+		int y = Constants.rng.nextInt(height - borderClearance) + borderClearance;
+
+		fun.accept(x, y);
+	}
+
+	/**
+	 * Transforms the level matrix into a single String.
+	 * @return The level matrix as a single String.
+	 */
+	String getLevel() {
+		return getLevel(0, width, 0, height);
+	}
+
+	/**
+	 * Transforms the level matrix into a single String, but only within the range of given coordinates.
+	 * @param minX The minimum x coordinate (inclusive).
+	 * @param maxX The maximum x coordinate (exclusive).
+	 * @param minY The minimum y coordinate (inclusive).
+	 * @param maxY The maximum y coordinate (exclusive).
+	 * @return The level matrix as a single String.
+	 */
+	String getLevel(int minX, int maxX, int minY, int maxY) {
+		StringBuilder result = new StringBuilder();
+		for (int y = minY; y < maxY; y++) {
+			result.append(String.valueOf(matrix[y], minX, maxX - minX)).append('\n');
+		}
+		return result.substring(0, result.length() - 1);
+	}
 }

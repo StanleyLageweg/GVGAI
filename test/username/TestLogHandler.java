@@ -45,8 +45,12 @@ public class TestLogHandler extends Handler {
 	}
 
 	@Override
-	public void flush() { }
+	public void flush() {
+		// No implementation necessary
+	}
 
 	@Override
-	public void close() throws SecurityException { }
+	public void close() {
+		// No implementation necessary
+	}
 }
