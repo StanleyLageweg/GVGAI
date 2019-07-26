@@ -5,7 +5,7 @@ import java.util.Arrays;
 /**
  * A utilities class.
  */
-final class Utils {
+public final class Utils {
 
 	/**
 	 * Hide the constructor.
@@ -20,7 +20,7 @@ final class Utils {
 	 * @param <T> The type of the value.
 	 * @return The clamped value
 	 */
-	static <T extends Comparable<T>> T clamp(T min, T val, T max) {
+	public static <T extends Comparable<T>> T clamp(T min, T val, T max) {
 		if (val.compareTo(min) < 0) return min;
 		if (val.compareTo(max) > 0) return max;
 		return val;

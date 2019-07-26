@@ -1,4 +1,4 @@
-package username;
+package username.level;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 /**
  * A class containing a level mapping, which maps characters to lists of sprites.
  */
-class LevelMapping {
+public class LevelMapping {
 
 	/**
 	 * Maps characters to multi sprite counter.
@@ -27,7 +27,7 @@ class LevelMapping {
 	 * @return Copy of {@link #mapping}
 	 */
 	@SuppressWarnings("PMD.LooseCoupling")
-	HashMap<Character, ArrayList<String>> getMapping() {
+	public HashMap<Character, ArrayList<String>> getMapping() {
 		return new HashMap<>(mapping.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry ->
 				entry.getValue().toList())));
 	}

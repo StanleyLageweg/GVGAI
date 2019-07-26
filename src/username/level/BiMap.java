@@ -1,4 +1,4 @@
-package username;
+package username.level;
 
 import java.util.Collection;
 import java.util.HashMap;

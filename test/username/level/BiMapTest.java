@@ -1,4 +1,4 @@
-package username;
+package username.level;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

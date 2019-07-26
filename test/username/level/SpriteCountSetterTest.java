@@ -1,8 +1,10 @@
-package username;
+package username.level;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import username.Constants;
+import username.TestLogHandler;
 import username.random.ExtendedRandom;
 
 import java.util.List;

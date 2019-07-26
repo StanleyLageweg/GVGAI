@@ -11,47 +11,47 @@ import java.util.logging.Logger;
  * A class containing constants that are used by the level generator.
  */
 @SuppressWarnings("checkstyle:visibilitymodifier")
-final class Constants {
+public final class Constants {
 
 	/**
 	 * The minimum width of the level, excluding its border.
 	 */
-	static final int MIN_WIDTH = 6;
+	public static final int MIN_WIDTH = 6;
 
 	/**
 	 * The maximum width of the level, excluding its border.
 	 */
-	static final int MAX_WIDTH = 18;
+	public static final int MAX_WIDTH = 18;
 
 	/**
 	 * How much the width of the level can randomly change, as a multiplier.
 	 */
-	static final double RANDOM_WIDTH = 0.25;
+	public static final double RANDOM_WIDTH = 0.25;
 
 	/**
 	 * The minimum height of the level, excluding its border.
 	 */
-	static final int MIN_HEIGHT = 6;
+	public static final int MIN_HEIGHT = 6;
 
 	/**
 	 * The maximum height of the level, excluding its border.
 	 */
-	static final int MAX_HEIGHT = 18;
+	public static final int MAX_HEIGHT = 18;
 
 	/**
 	 * How much the height of the level can randomly change, as a multiplier.
 	 */
-	static final double RANDOM_HEIGHT = 0.25;
+	public static final double RANDOM_HEIGHT = 0.25;
 
 	/**
 	 * Random number generator.
 	 */
-	static ExtendedRandom rng = new ExtendedRandom();
+	public static ExtendedRandom rng = new ExtendedRandom();
 
 	/**
 	 * Logger.
 	 */
-	static final Logger LOGGER = Logger.getLogger(Constants.class.getName());
+	public static final Logger LOGGER = Logger.getLogger(Constants.class.getName());
 
 	static {
 		System.setProperty("java.util.logging.SimpleFormatter.format", "[%4$-7s] %5$s");

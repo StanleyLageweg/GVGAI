@@ -1,7 +1,9 @@
-package username;
+package username.level;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import username.Constants;
+import username.TestLogHandler;
 
 import java.util.List;
 import java.util.logging.Level;

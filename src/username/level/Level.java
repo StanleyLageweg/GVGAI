@@ -1,7 +1,8 @@
-package username;
+package username.level;
 
 import lombok.Getter;
 import lombok.Setter;
+import username.Constants;
 import username.random.MatrixSelection;
 
 import java.util.Arrays;
@@ -17,6 +18,11 @@ public class Level {
 	 * The LEVEL_MAPPING for this level.
 	 */
 	@Getter private static final LevelMapping LEVEL_MAPPING = new LevelMapping();
+
+	/**
+	 * Whether the level has borders or not.
+	 */
+	@Setter private static boolean hasBorder;
 
 	/**
 	 * The level we are generating, represented as a matrix, containing chars which represent sprites.
@@ -46,14 +52,14 @@ public class Level {
 	@Getter private final SpriteCountSetter spriteCountSetter = new SpriteCountSetter(this);
 
 	/**
-	 * Whether the level has borders or not.
-	 */
-	@Getter @Setter private boolean hasBorder;
-
-	/**
 	 * The tick of which this level represents the state.
 	 */
 	@Getter @Setter private int tick;
+
+	/**
+	 * The avatar for this level.
+	 */
+	@Getter @Setter private Avatar avatar;
 
 	/**
 	 * Constructs a new level, of the specified size.
@@ -216,5 +222,13 @@ public class Level {
 			result.append(String.valueOf(matrix[y], minX, maxX - minX)).append('\n');
 		}
 		return result.substring(0, result.length() - 1);
+	}
+
+	/**
+	 * Returns {@link #hasBorder}.
+	 * @return {@link #hasBorder}
+	 */
+	public static boolean hasBorder() {
+		return hasBorder;
 	}
 }

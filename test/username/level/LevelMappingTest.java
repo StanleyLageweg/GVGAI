@@ -1,4 +1,4 @@
-package username;
+package username.level;
 
 import org.assertj.core.data.MapEntry;
 import org.junit.jupiter.api.BeforeEach;

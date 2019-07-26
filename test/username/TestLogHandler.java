@@ -24,7 +24,7 @@ public class TestLogHandler extends Handler {
 	 * Modifies the logger to log all levels, but only to this handler.
 	 * @param logger The logger which should be handled by this handler.
 	 */
-	TestLogHandler(Logger logger) {
+	public TestLogHandler(Logger logger) {
 		// Make the logger only use this handler
 		logger.setUseParentHandlers(false);
 		Arrays.stream(logger.getHandlers()).forEach(logger::removeHandler);

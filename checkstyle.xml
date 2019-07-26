@@ -98,10 +98,6 @@
             <property name="excludes" value="javax.swing"/>
             <property name="excludes" value="org.mockito.Mockito.*"/>
         </module>
-        <module name="AvoidStaticImport">
-            <property name="excludes"
-                      value="org.assertj.core.api.Assertions.*, org.assertj.core.data.MapEntry.*, org.mockito.Mockito.*"/>
-        </module>
         <module name="CustomImportOrder"> <!-- IntelliJ IDEA default settings -->
             <property name="customImportOrderRules"
                       value="THIRD_PARTY_PACKAGE###SPECIAL_IMPORTS###STANDARD_JAVA_PACKAGE###STATIC"/>
