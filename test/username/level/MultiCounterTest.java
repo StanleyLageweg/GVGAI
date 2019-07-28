@@ -26,6 +26,12 @@ class MultiCounterTest {
 	}
 
 	@Test
+	void copy() {
+		spriteCounter.increment(SPRITE);
+		assertThat(new MultiCounter<>(spriteCounter).get(SPRITE)).isOne();
+	}
+
+	@Test
 	void zero() {
 		assertThat(spriteCounter.get(SPRITE)).isZero();
 	}

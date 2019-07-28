@@ -74,4 +74,13 @@ public final class Utils {
 	public static <T> T[][] copyMatrix(T[]... matrix) {
 		return Arrays.stream(matrix).map(array -> Arrays.copyOf(array, array.length)).toArray(array -> matrix.clone());
 	}
+
+	/**
+	 * Creates a copy of the given matrix.
+	 * @param matrix The matrix to copy.
+	 * @return A copy of the matrix.
+	 */
+	public static char[][] copyMatrix(char[]... matrix) {
+		return Arrays.stream(matrix).map(array -> Arrays.copyOf(array, array.length)).toArray(array -> matrix.clone());
+	}
 }

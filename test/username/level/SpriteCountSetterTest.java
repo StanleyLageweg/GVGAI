@@ -1,5 +1,6 @@
 package username.level;
 
+import core.game.GameDescription;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -7,12 +8,16 @@ import username.Constants;
 import username.TestLogHandler;
 import username.random.ExtendedRandom;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.LogRecord;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
+import static username.SharedData.gameDescription;
+
 
 class SpriteCountSetterTest {
 
@@ -22,7 +27,7 @@ class SpriteCountSetterTest {
 
 	private static final ExtendedRandom RNG = spy(ExtendedRandom.class);
 
-	private Level level;
+	private LevelTree.LevelState levelState;
 
 	private MultiCounter<String> spriteCounter;
 
@@ -31,14 +36,16 @@ class SpriteCountSetterTest {
 	@BeforeAll
 	static void beforeAll() {
 		Constants.rng = RNG;
+		gameDescription = mock(GameDescription.class);
+		when(gameDescription.getTerminationConditions()).thenReturn(new ArrayList<>());
 	}
 
 	@BeforeEach
 	void beforeEach() {
+		levelState = new LevelTree(false, 10, 7, "avatar", 0).getRoot();
 		LOG_RECORDS.clear();
-		level = new Level(10, 7);
-		spriteCounter = level.getSpriteCounter();
-		spriteCountSetter = new SpriteCountSetter(level);
+		spriteCounter = levelState.getSpriteCounter();
+		spriteCountSetter = new SpriteCountSetter(levelState);
 	}
 
 	@Test
@@ -50,7 +57,7 @@ class SpriteCountSetterTest {
 
 	@Test
 	void makeLessThanChange() {
-		level.addSpriteRandomly(SPRITE);
+		levelState.addSpriteRandomly(SPRITE);
 		spriteCountSetter.makeLessThan(1, SPRITE);
 		assertThat(spriteCounter.get(SPRITE)).isZero();
 	}
@@ -96,14 +103,14 @@ class SpriteCountSetterTest {
 
 	@Test
 	void makeNotEqualDecrease() {
-		level.addSpriteRandomly(SPRITE);
+		levelState.addSpriteRandomly(SPRITE);
 		spriteCountSetter.makeNotEqual(1, 1, SPRITE);
 		assertThat(spriteCounter.get(SPRITE)).isZero();
 	}
 
 	@Test
 	void makeNotEqualRandomIncrease() {
-		level.addSpriteRandomly(SPRITE);
+		levelState.addSpriteRandomly(SPRITE);
 
 		when(RNG.nextBoolean()).thenReturn(false);
 		spriteCountSetter.makeNotEqual(1, 21, SPRITE);
@@ -113,7 +120,7 @@ class SpriteCountSetterTest {
 
 	@Test
 	void makeNotEqualRandomDecrease() {
-		level.addSpriteRandomly(SPRITE);
+		levelState.addSpriteRandomly(SPRITE);
 
 		when(RNG.nextBoolean()).thenReturn(true);
 		spriteCountSetter.makeNotEqual(1, 21, SPRITE);
@@ -142,8 +149,8 @@ class SpriteCountSetterTest {
 
 	@Test
 	void makeEqualDecrease() {
-		level.addSpriteRandomly(SPRITE);
-		level.addSpriteRandomly(SPRITE);
+		levelState.addSpriteRandomly(SPRITE);
+		levelState.addSpriteRandomly(SPRITE);
 		spriteCountSetter.makeEqual(1, SPRITE);
 		assertThat(spriteCounter.get(SPRITE)).isOne();
 	}
@@ -153,5 +160,16 @@ class SpriteCountSetterTest {
 		spriteCountSetter.makeEqual(-1, SPRITE);
 		assertThat(spriteCounter.get(SPRITE)).isZero();
 		assertThat(LOG_RECORDS).extracting(LogRecord::getLevel).containsExactly(java.util.logging.Level.WARNING);
+	}
+
+	@Test
+	void setTickOnce() {
+		assertThat(spriteCountSetter.setTick(21)).isTrue();
+	}
+
+	@Test
+	void setTickTwice() {
+		assertThat(spriteCountSetter.setTick(21)).isTrue();
+		assertThat(spriteCountSetter.setTick(21)).isFalse();
 	}
 }

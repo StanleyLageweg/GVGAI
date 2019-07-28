@@ -62,9 +62,7 @@
         <module name="ExplicitInitialization"/>
         <module name="FallThrough"/>
         <module name="HiddenField">
-            <property name="ignoreConstructorParameter" value="true"/>
-            <property name="ignoreSetter" value="true"/>
-            <property name="setterCanReturnItsClass" value="true"/>
+            <property name="tokens" value="VARIABLE_DEF, LAMBDA"/>
         </module>
         <module name="IllegalCatch"/>
         <module name="IllegalThrows"/>
@@ -111,6 +109,7 @@
 
         <!-- Javadoc Comments -->
         <module name="AtclauseOrder"/>
+        <module name="InvalidJavadocPosition"/>
         <module name="JavadocMethod"/>
         <module name="JavadocStyle"/>
         <module name="JavadocTagContinuationIndentation"/>

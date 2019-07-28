@@ -1,5 +1,6 @@
 package username.level;
 
+import lombok.Getter;
 import username.Constants;
 
 import java.util.Arrays;
@@ -8,12 +9,12 @@ import java.util.List;
 /**
  * Class that adds or removes sprites from a level.
  */
-public class SpriteCountSetter {
+class SpriteCountSetter {
 
 	/**
 	 * The Level which this SpriteCountSetter makes changes to.
 	 */
-	private final Level level;
+	private final LevelTree.LevelState levelState;
 
 	/**
 	 * The SpriteCounter for the given level.
@@ -21,12 +22,18 @@ public class SpriteCountSetter {
 	private final MultiCounter<String> spriteCounter;
 
 	/**
-	 * Constructs a new SpriteCountSetter, for the given level.
-	 * @param level {@link #level}
+	 * The game tick which is required for the level state to be in a final state.
+	 * Null if it does not matter.
 	 */
-	public SpriteCountSetter(Level level) {
-		this.level = level;
-		spriteCounter = level.getSpriteCounter();
+	@Getter private Integer tick;
+
+	/**
+	 * Constructs a new SpriteCountSetter, for the given level.
+	 * @param levelState {@link #levelState}
+	 */
+	SpriteCountSetter(LevelTree.LevelState levelState) {
+		this.levelState = levelState;
+		spriteCounter = levelState.getSpriteCounter();
 	}
 
 	/**
@@ -36,7 +43,7 @@ public class SpriteCountSetter {
 	 * @param count The number of sprites should be at least below this amount.
 	 * @param sprites The sprite types which should be removed.
 	 */
-	public void makeLessThan(int count, List<String> sprites) {
+	void makeLessThan(int count, List<String> sprites) {
 		count = countShouldBeMoreThan(count, 1);
 		int spriteCount = spriteCounter.get(sprites);
 
@@ -54,7 +61,7 @@ public class SpriteCountSetter {
 	 * @param count The number of sprites should be at least below this amount.
 	 * @param sprites The sprite types which should be removed.
 	 */
-	public void makeLessThan(int count, String... sprites) {
+	void makeLessThan(int count, String... sprites) {
 		makeLessThan(count, Arrays.asList(sprites));
 	}
 
@@ -67,7 +74,7 @@ public class SpriteCountSetter {
 	 * @param maxCount The number of sprites should be below this amount.
 	 * @param sprites The sprite types which should be added.
 	 */
-	public void makeMoreThan(int count, int maxCount, List<String> sprites) {
+	void makeMoreThan(int count, int maxCount, List<String> sprites) {
 		// The sprite count is already correct
 		int spriteCount = spriteCounter.get(sprites);
 		if (spriteCount > count) return;
@@ -93,7 +100,7 @@ public class SpriteCountSetter {
 	 * @param maxCount The number of sprites should be below this amount.
 	 * @param sprites The sprite types which should be added.
 	 */
-	public void makeMoreThan(int count, int maxCount, String... sprites) {
+	void makeMoreThan(int count, int maxCount, String... sprites) {
 		makeMoreThan(count, maxCount, Arrays.asList(sprites));
 	}
 
@@ -105,7 +112,7 @@ public class SpriteCountSetter {
 	 * @param maxCount The number of sprites should be below this amount.
 	 * @param sprites The sprite types which should be added or removed.
 	 */
-	public void makeNotEqual(int count, int maxCount, List<String> sprites) {
+	void makeNotEqual(int count, int maxCount, List<String> sprites) {
 		int spriteCount = spriteCounter.get(sprites);
 		if (count != spriteCount) return;
 
@@ -124,7 +131,7 @@ public class SpriteCountSetter {
 	 * @param maxCount The number of sprites should be below this amount.
 	 * @param sprites The sprite types which should be added or removed.
 	 */
-	public void makeNotEqual(int count, int maxCount, String... sprites) {
+	void makeNotEqual(int count, int maxCount, String... sprites) {
 		makeNotEqual(count, maxCount, Arrays.asList(sprites));
 	}
 
@@ -137,8 +144,8 @@ public class SpriteCountSetter {
 	 */
 	private void makeEqual(int count, List<String> sprites, int spriteCount) {
 		int nrSpritesToAdd = count - spriteCount;
-		for (int i = 0; i < nrSpritesToAdd; i++) level.addSpriteRandomly(Constants.rng.elementOf(sprites));
-		for (int i = 0; i > nrSpritesToAdd; i--) level.removeSpriteRandomly(Constants.rng.elementOf(sprites));
+		for (int i = 0; i < nrSpritesToAdd; i++) levelState.addSpriteRandomly(Constants.rng.elementOf(sprites));
+		for (int i = 0; i > nrSpritesToAdd; i--) levelState.removeSpriteRandomly(Constants.rng.elementOf(sprites));
 	}
 
 	/**
@@ -147,7 +154,7 @@ public class SpriteCountSetter {
 	 * @param count The number of sprites should be equal to this amount.
 	 * @param sprites The sprite types which should be added or removed.
 	 */
-	public void makeEqual(int count, List<String> sprites) {
+	void makeEqual(int count, List<String> sprites) {
 		count = countShouldBeMoreThan(count, 0);
 		makeEqual(count, sprites, spriteCounter.get(sprites));
 	}
@@ -158,7 +165,7 @@ public class SpriteCountSetter {
 	 * @param count The number of sprites should be equal to this amount.
 	 * @param sprites The sprite types which should be added or removed.
 	 */
-	public void makeEqual(int count, String... sprites) {
+	void makeEqual(int count, String... sprites) {
 		makeEqual(count, Arrays.asList(sprites));
 	}
 
@@ -168,11 +175,24 @@ public class SpriteCountSetter {
 	 * @param minCount The value count should be above.
 	 * @return The new value for count.
 	 */
-	public static int countShouldBeMoreThan(int count, int minCount) {
+	static int countShouldBeMoreThan(int count, int minCount) {
 		if (count >= minCount) return count;
 
 		Constants.warning("Count (%1$d) was less than minCount (%2$d), thus %2$d is the new vale for count", count,
 				minCount);
 		return minCount;
+	}
+
+	/**
+	 * Set {@link #tick} to the given value, or returns false if it's not able to do so.
+	 * @param tick The required tick value.
+	 * @return Whether the tick field was set or not.
+	 */
+	@SuppressWarnings("PMD.LinguisticNaming")
+	boolean setTick(int tick) {
+		if (this.tick != null) return false;
+
+		this.tick = tick;
+		return true;
 	}
 }

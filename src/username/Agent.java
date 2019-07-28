@@ -4,9 +4,9 @@ import core.game.GameDescription;
 import core.generator.AbstractLevelGenerator;
 import tools.ElapsedCpuTimer;
 import tools.GameAnalyzer;
-import username.level.Level;
 import username.level.LevelFinalizer;
 import username.level.LevelInitializer;
+import username.level.LevelTree;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,6 +15,11 @@ import java.util.HashMap;
  * Agent that generates a level from a GameDescription.
  */
 public class Agent extends AbstractLevelGenerator {
+
+	/**
+	 * Tree structure for generating the level.
+	 */
+	private LevelTree levelTree;
 
 	/**
 	 * Constructor for the level generator.
@@ -29,11 +34,12 @@ public class Agent extends AbstractLevelGenerator {
 
 	@Override
 	public String generateLevel(GameDescription game, ElapsedCpuTimer elapsedTimer) {
-		return LevelFinalizer.finalizeLevel(LevelInitializer.getLevel());
+		levelTree = LevelInitializer.initializeLevelTree();
+		return LevelFinalizer.finalizeLevel(levelTree.getRoot());
 	}
 
 	@Override
 	public HashMap<Character, ArrayList<String>> getLevelMapping() {
-		return Level.getLEVEL_MAPPING().getMapping();
+		return levelTree.getLevelMapping();
 	}
 }

@@ -16,37 +16,19 @@ import static username.SharedData.gameDescription;
 public final class LevelInitializer {
 
 	/**
-	 * Level that is being initialized.
-	 */
-	private static Level level;
-
-	/**
 	 * Hide constructor.
 	 */
 	private LevelInitializer() { }
 
 	/**
-	 * Returns an initialized level.
-	 * @return An initialized level.
+	 * Returns an initialized LevelTree.
+	 * @return An initialized LevelTree.
 	 */
-	public static Level getLevel() {
-		Level.setHasBorder(!gameAnalyzer.getSolidSprites().isEmpty());
+	public static LevelTree initializeLevelTree() {
+		boolean hasBorder = !gameAnalyzer.getSolidSprites().isEmpty();
 
-		initializeLevel();
-		addSolidBorder();
-		addPlayerAvatar();
-		createWinState();
-
-		return level;
-	}
-
-	/**
-	 * Determines the width and height of the level and initializes a new Level object.
-	 * @see Level
-	 */
-	private static void initializeLevel() {
 		// Determine if we need to add clearance to add a border
-		int borderClearance = Level.hasBorder() ? 2 : 0;
+		int borderClearance = hasBorder ? 2 : 0;
 
 		// Determine the width and height
 		int width = Utils.clamp(Constants.MIN_WIDTH,
@@ -56,66 +38,68 @@ public final class LevelInitializer {
 				(int) (gameDescription.getAllSpriteData().size() * (1 + Constants.RANDOM_HEIGHT
 						* Constants.rng.nextDouble())), Constants.MAX_HEIGHT) + borderClearance;
 
-		// Initialize the level
-		level = new Level(width, height);
+		String avatarSprite = gameDescription.getAvatar().get(0).name;
+
+		int tick = Constants.rng.nextInt(Constants.MIN_TICK, Constants.MAX_TICK);
+
+		return new LevelTree(hasBorder, width, height, avatarSprite, tick);
+
 	}
 
 	/**
-	 * Adds a border of random solid sprites around the level.
+	 * Adds a border of random solid sprites around the level state.
+	 * @param levelState The level to add a solid border around.
 	 */
-	private static void addSolidBorder() {
-		if (!Level.hasBorder()) return;
+	static void addSolidBorder(LevelTree.LevelState levelState) {
+		if (!levelState.hasBorder()) return;
 
 		// Get the sprite to use for the border
 		String solidSprite = Constants.rng.elementOf(gameAnalyzer.getSolidSprites());
 
 		// Add a border along the top and bottom side of the level
-		for (int x = 0; x < level.getWidth(); x++) {
-			level.setSprite(x, 0, solidSprite);
-			level.setSprite(x, level.getHeight() - 1, solidSprite);
+		for (int x = 0; x < levelState.getWidth(); x++) {
+			levelState.setSprite(x, 0, solidSprite);
+			levelState.setSprite(x, levelState.getHeight() - 1, solidSprite);
 		}
 
 		// Add a border along the left and right side of the level
-		for (int y = 1; y < level.getHeight() - 1; y++) {
-			level.setSprite(0, y, solidSprite);
-			level.setSprite(level.getWidth() - 1, y, solidSprite);
+		for (int y = 1; y < levelState.getHeight() - 1; y++) {
+			levelState.setSprite(0, y, solidSprite);
+			levelState.setSprite(levelState.getWidth() - 1, y, solidSprite);
 		}
 	}
 
 	/**
-	 * Places the player avatar into the level.
+	 * Adds and removes sprites from the level state, to create a win state.
+	 * @param spriteCountSetter The spriteCountSetter of the level state.
 	 */
-	private static void addPlayerAvatar() {
-		Avatar.setSprite(Constants.rng.elementOf(gameAnalyzer.getAvatarSprites()));
-		level.forRandomPosition((x, y) ->
-				level.setAvatar(new Avatar(x, y, level)), true);
-	}
-
-	/**
-	 * Adds and removes sprites from the level, to create a win state.
-	 */
-	private static void createWinState() {
+	static void createWinState(SpriteCountSetter spriteCountSetter) {
 		List<GameDescription.TerminationData> terminationConditions = gameDescription.getTerminationConditions();
 		List<GameDescription.TerminationData> winConditions = terminationConditions.stream().filter(terminationData ->
 				Boolean.parseBoolean(terminationData.win.split(",", 2)[0])).collect(Collectors.toList());
 
+		if (winConditions.isEmpty()) {
+			Constants.warning("GameDescription has no win conditions");
+			return;
+		}
 		GameDescription.TerminationData winCondition = Constants.rng.elementOf(winConditions);
 
 		// Make the conditions, before the win condition, not hold
 		terminationConditions.subList(0, terminationConditions.indexOf(winCondition)).forEach(condition ->
-				applyCondition(condition, false));
+				applyCondition(condition, false, spriteCountSetter));
 
 		// Make the win condition hold
-		applyCondition(winCondition, true);
+		applyCondition(winCondition, true, spriteCountSetter);
 	}
 
 	/**
 	 * Applies a Termination condition to the level.
 	 * @param condition Termination condition
 	 * @param makeConditionHold Whether the condition should hold
+	 * @param spriteCountSetter The spriteCountSetter of the level state
 	 */
-	private static void applyCondition(GameDescription.TerminationData condition, boolean makeConditionHold) {
-
+	private static void applyCondition(GameDescription.TerminationData condition, boolean makeConditionHold,
+	                                  SpriteCountSetter spriteCountSetter) {
 		// TODO make sure that different conditions don't overwrite each other
 
 		int maxCount = (condition.limit + 1) * 2;
@@ -125,10 +109,10 @@ public final class LevelInitializer {
 			case "SpriteCounter":
 				if (makeConditionHold) {
 					// Make sure the number of sprites is less than or equal to the value
-					level.getSpriteCountSetter().makeLessThan(condition.limit + 1, condition.sprites.get(0));
+					spriteCountSetter.makeLessThan(condition.limit + 1, condition.sprites.get(0));
 				} else {
 					// Make sure the number of sprites is more than the value
-					level.getSpriteCountSetter().makeMoreThan(condition.limit, maxCount, condition.sprites.get(0));
+					spriteCountSetter.makeMoreThan(condition.limit, maxCount, condition.sprites.get(0));
 				}
 				break;
 
@@ -136,10 +120,10 @@ public final class LevelInitializer {
 			case "SpriteCounterMore":
 				if (makeConditionHold) {
 					// Make sure the number of sprites is more than or equal to the value
-					level.getSpriteCountSetter().makeMoreThan(condition.limit - 1, maxCount, condition.sprites.get(0));
+					spriteCountSetter.makeMoreThan(condition.limit - 1, maxCount, condition.sprites.get(0));
 				} else {
 					// Make sure the number of sprites is less than the value
-					level.getSpriteCountSetter().makeLessThan(condition.limit, condition.sprites.get(0));
+					spriteCountSetter.makeLessThan(condition.limit, condition.sprites.get(0));
 				}
 				break;
 
@@ -147,10 +131,10 @@ public final class LevelInitializer {
 			case "MultiSpriteCounter":
 				if (makeConditionHold) {
 					// Make sure the number of sprites is equal to the value
-					level.getSpriteCountSetter().makeEqual(condition.limit, condition.sprites);
+					spriteCountSetter.makeEqual(condition.limit, condition.sprites);
 				} else {
 					// Make sure the number of sprites is not equal to the value
-					level.getSpriteCountSetter().makeNotEqual(condition.limit, maxCount, condition.sprites);
+					spriteCountSetter.makeNotEqual(condition.limit, maxCount, condition.sprites);
 				}
 				break;
 
@@ -158,13 +142,17 @@ public final class LevelInitializer {
 			// (prevents any other terminations from triggering)
 			case "StopCounter":
 				// Make sure the stop counter never holds
-				level.getSpriteCountSetter().makeNotEqual(condition.limit, maxCount, condition.sprites);
+				spriteCountSetter.makeNotEqual(condition.limit, maxCount, condition.sprites);
+				// TODO what if makeHold is true
 				break;
 
 			// Level is terminated if the game time is larger than or equal to a certain value
 			case "Timeout":
-				if (makeConditionHold) level.setTick(Constants.rng.nextInt(condition.limit) + condition.limit);
-				else level.setTick(Constants.rng.nextInt(condition.limit));
+				if (makeConditionHold) {
+					spriteCountSetter.setTick(Constants.rng.nextInt(condition.limit) + condition.limit);
+				} else {
+					spriteCountSetter.setTick(Constants.rng.nextInt(condition.limit));
+				}
 				break;
 
 			default:

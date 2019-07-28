@@ -1,22 +1,21 @@
 package username.level;
 
 import lombok.Getter;
-import username.Constants;
 
 /**
- * Class that represents the player avatar in the level.
+ * Class that represents the player avatar in a level state.
  */
 public class Avatar {
 
 	/**
 	 * The sprite that represents this avatar.
 	 */
-	@Getter private static String sprite;
+	@Getter private final String sprite;
 
 	/**
-	 * The level this avatar belongs to.
+	 * The level state this avatar belongs to.
 	 */
-	private Level level;
+	private final LevelTree.LevelState levelState;
 
 	/**
 	 * The x coordinate of the avatar.
@@ -30,40 +29,34 @@ public class Avatar {
 
 	/**
 	 * Constructs a new Avatar.
-	 * {@link #sprite} has to be set first.
 	 * @param x The x coordinate of the avatar.
 	 * @param y The y coordinate of the avatar.
-	 * @param level The level this avatar belongs to.
-	 */
-	public Avatar(int x, int y, Level level) {
-		if (Avatar.sprite == null) Constants.warning("Avatar sprite was not initialized");
-		this.level = level;
-		setPosition(x, y);
-	}
-
-	/**
-	 * Sets the sprite field, only once.
 	 * @param sprite The sprite that represents this avatar.
+	 * @param levelState The level state this avatar belongs to.
 	 */
-	public static void setSprite(String sprite) {
-		if (Avatar.sprite != null) {
-			Constants.warning("Tried to change avatar sprite '%1$s' to '%2$s'.", Avatar.sprite, sprite);
-			return;
-		}
-
-		Avatar.sprite = sprite;
-	}
-
-	/**
-	 * Moves the avatar to the new position.
-	 * @param x The x coordinate of the avatar.
-	 * @param y The y coordinate of the avatar.
-	 */
-	@SuppressWarnings("checkstyle:hiddenfield")
-	public void setPosition(int x, int y) {
-		level.moveSprite(this.x, this.y, x, y, sprite);
-
+	private Avatar(int x, int y, String sprite, LevelTree.LevelState levelState) {
 		this.x = x;
 		this.y = y;
+		this.sprite = sprite;
+		this.levelState = levelState;
+
+		levelState.addSprite(x, y, sprite);
+	}
+
+	/**
+	 * Constructs a new Avatar.
+	 * @param levelState the level state this avatar belongs to.
+	 */
+	protected Avatar(LevelTree.LevelState levelState) {
+		this(levelState.getRandomX(1), levelState.getRandomY(1), levelState.getAvatarSprite(), levelState);
+	}
+
+	/**
+	 * Constructs an Avatar, from another Avatar.
+	 * @param other The avatar to copy.
+	 * @param levelState The level state this avatar belongs to.
+	 */
+	protected Avatar(Avatar other, LevelTree.LevelState levelState) {
+		this(other.x, other.y, other.sprite, levelState);
 	}
 }

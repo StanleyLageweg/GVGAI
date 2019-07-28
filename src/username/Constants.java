@@ -44,6 +44,16 @@ public final class Constants {
 	public static final double RANDOM_HEIGHT = 0.25;
 
 	/**
+	 * The minimum game tick, for the root level state.
+	 */
+	public static final int MIN_TICK = 150;
+
+	/**
+	 * The maximum game tick, for the root level state.
+	 */
+	public static final int MAX_TICK = 500;
+
+	/**
 	 * Random number generator.
 	 */
 	public static ExtendedRandom rng = new ExtendedRandom();

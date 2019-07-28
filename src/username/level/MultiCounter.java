@@ -15,25 +15,33 @@ import java.util.stream.Collectors;
  * A class that can keep count of elements.
  * @param <T> The type of the element to count.
  */
-public class MultiCounter<T> {
+class MultiCounter<T> {
 
 	/**
 	 * HashMap that stores the count for each element.
 	 */
-	private final Map<T, Integer> counter = new ConcurrentHashMap<>();
+	private final Map<T, Integer> counter;
 
 	/**
 	 * Constructs a new MultiCounter.
 	 */
-	public MultiCounter() {
-		// No implementation needed
+	MultiCounter() {
+		counter = new ConcurrentHashMap<>();
+	}
+
+	/**
+	 * Constructs a new MultiCounter, from another MultiCounter.
+	 * @param other MultiCounter to create a copy of.
+	 */
+	MultiCounter(MultiCounter<T> other) {
+		counter = new ConcurrentHashMap<>(other.counter);
 	}
 
 	/**
 	 * Constructs a new MultiCounter, from a list of elements.
 	 * @param elements Elements to fill the multiCounter with.
 	 */
-	public MultiCounter(List<T> elements) {
+	MultiCounter(List<T> elements) {
 		this();
 		increment(elements);
 	}
@@ -43,7 +51,7 @@ public class MultiCounter<T> {
 	 * @param elements Elements to fill the multiCounter with.
 	 */
 	@SafeVarargs
-	public MultiCounter(T... elements) {
+	MultiCounter(T... elements) {
 		this();
 		increment(elements);
 	}
@@ -52,7 +60,7 @@ public class MultiCounter<T> {
 	 * Increases the count by one, for each element.
 	 * @param elements The element to increase the count for.
 	 */
-	public void increment(List<T> elements) {
+	void increment(List<T> elements) {
 		elements.forEach(element -> counter.put(element, counter.getOrDefault(element, 0) + 1));
 	}
 
@@ -61,7 +69,7 @@ public class MultiCounter<T> {
 	 * @param elements The element to increase the count for.
 	 */
 	@SafeVarargs
-	public final void increment(T... elements) {
+	final void increment(T... elements) {
 		increment(Arrays.asList(elements));
 	}
 
@@ -69,7 +77,7 @@ public class MultiCounter<T> {
 	 * Decreases the count by one, for each element.
 	 * @param elements The element to decrease the count for.
 	 */
-	public void decrement(List<T> elements) {
+	void decrement(List<T> elements) {
 
 		elements.forEach(element -> {
 			if (!counter.containsKey(element)) {
@@ -91,7 +99,7 @@ public class MultiCounter<T> {
 	 * @param elements The element to decrease the count for.
 	 */
 	@SafeVarargs
-	public final void decrement(T... elements) {
+	final void decrement(T... elements) {
 		decrement(Arrays.asList(elements));
 	}
 
@@ -100,7 +108,7 @@ public class MultiCounter<T> {
 	 * @param elements The elements to calculate the sum of counts for.
 	 * @return The sum of the counts of the given elements.
 	 */
-	public int get(List<T> elements) {
+	int get(List<T> elements) {
 		return elements.stream().mapToInt(element -> counter.getOrDefault(element, 0)).sum();
 	}
 
@@ -110,7 +118,7 @@ public class MultiCounter<T> {
 	 * @return The sum of the counts of the given elements.
 	 */
 	@SafeVarargs
-	public final int get(T... elements) {
+	final int get(T... elements) {
 		return get(Arrays.asList(elements));
 	}
 
@@ -119,7 +127,7 @@ public class MultiCounter<T> {
 	 * @return An ArrayList representation of the counter.
 	 */
 	@SuppressWarnings("PMD.LooseCoupling")
-	public ArrayList<T> toList() {
+	ArrayList<T> toList() {
 		return counter.entrySet().stream().map(entry -> Collections.nCopies(entry.getValue(), entry.getKey())).flatMap(
 				Collection::stream).collect(Collectors.toCollection(ArrayList::new));
 	}
