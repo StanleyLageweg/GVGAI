@@ -41,10 +41,7 @@ public class LevelTree {
 	 */
 	@Getter private final int height;
 
-	/**
-	 * The sprite that represents the player avatar.
-	 */
-	private final String avatarSprite;
+	private final Avatar avatar;
 
 	/**
 	 * The root of the level tree.
@@ -64,7 +61,7 @@ public class LevelTree {
 		this.hasBorder = hasBorder;
 		this.width = width;
 		this.height = height;
-		this.avatarSprite = avatarSprite;
+		avatar = new Avatar(avatarSprite);
 		root = new LevelTree.LevelState(tick);
 	}
 
@@ -113,7 +110,7 @@ public class LevelTree {
 		/**
 		 * The avatar of this level state.
 		 */
-		@Getter private final Avatar avatar;
+		@Getter private final Avatar.AvatarState avatarState;
 
 		/**
 		 * Constructs a new level state root, in a finished state.
@@ -131,7 +128,7 @@ public class LevelTree {
 			spriteCounter = new MultiCounter<>();
 
 			// Spawn the avatar in a random location
-			avatar = new Avatar(this);
+			avatarState = avatar.getNewState(this);
 
 			// Add a solid border
 			LevelInitializer.addSolidBorder(this);
@@ -154,7 +151,7 @@ public class LevelTree {
 			matrix = Utils.copyMatrix(parent.matrix);
 			this.tick = parent.tick - 1;
 			spriteCounter = new MultiCounter<>(parent.spriteCounter);
-			avatar = new Avatar(parent.avatar, this);
+			avatarState = parent.avatarState.copy(this);
 		}
 
 		/**
@@ -249,6 +246,11 @@ public class LevelTree {
 			addSprite(xNew, yNew, sprite);
 		}
 
+		void moveSpriteWithCollisions(int xOld, int yOld, int xNex, int yNew, String sprite) {
+			moveSprite(xOld, yOld, xNex, yNew, sprite);
+			// TODO
+		}
+
 		/**
 		 * Applies a function that takes two integers (x and y position) to each position in the level.
 		 * @param fun A function that takes an x and y position as an input.
@@ -339,13 +341,6 @@ public class LevelTree {
 		 */
 		boolean hasBorder() {
 			return hasBorder;
-		}
-
-		/**
-		 * @return The sprite representing the player avatar.
-		 */
-		String getAvatarSprite() {
-			return avatarSprite;
 		}
 	}
 }

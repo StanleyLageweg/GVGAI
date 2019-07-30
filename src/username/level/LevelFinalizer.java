@@ -30,7 +30,8 @@ public final class LevelFinalizer {
 		if (!gameAnalyzer.getSolidSprites().isEmpty()) {
 			// Check which areas are reachable
 			boolean[][] reachable = new boolean[levelState.getHeight()][levelState.getWidth()];
-			findReachablePositions(levelState, reachable, levelState.getAvatar().getX(), levelState.getAvatar().getY());
+			findReachablePositions(levelState, reachable, levelState.getAvatarState().getX(),
+					levelState.getAvatarState().getY());
 
 			fillUnreachablePositions(levelState, reachable);
 
@@ -121,7 +122,7 @@ public final class LevelFinalizer {
 	 * @return The level matrix as a single String.
 	 */
 	private static String getLevelCutToSize(LevelTree.LevelState levelState, boolean[]... reachable) {
-		Avatar avatar = levelState.getAvatar();
+		Avatar.AvatarState avatar = levelState.getAvatarState();
 		int minX = avatar.getX();
 		int maxX = avatar.getX();
 		int minY = avatar.getY();
