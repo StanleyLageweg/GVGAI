@@ -149,7 +149,7 @@ public final class LevelInitializer {
 			// Level is terminated if the game time is larger than or equal to a certain value
 			case "Timeout":
 				if (makeConditionHold) {
-					spriteCountSetter.setTick(Constants.rng.nextInt(condition.limit) + condition.limit);
+					spriteCountSetter.setTick(condition.limit);
 				} else {
 					spriteCountSetter.setTick(Constants.rng.nextInt(condition.limit));
 				}
